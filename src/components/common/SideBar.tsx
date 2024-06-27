@@ -67,7 +67,13 @@ const SideBar = ({
       <List>
         {MenuItems.map((item, index) => (
           // react-router-domのLinkを使ってリンクを貼る
-          <NavLink to={item.path}>
+          <NavLink
+            to={item.path}
+            style={({ isActive }) => {
+              console.log(isActive, item.text, isActive);
+              return { color: "red" };
+            }}
+          >
             <ListItem key={index} disablePadding>
               <ListItemButton>
                 <ListItemIcon>
