@@ -1,10 +1,8 @@
 import { Box } from "@mui/material";
-import React from "react";
 import MonthlySummary from "../components/MonthlySummary";
 import Calendar from "../components/Calendar";
 import TransactionMenu from "../components/TransactionMenu";
 import TransactionForm from "../components/TransactionForm";
-import { pink } from "@mui/material/colors";
 
 const Home = () => {
   return (
