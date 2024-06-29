@@ -1,17 +1,21 @@
 import { createTheme, PaletteColor, PaletteColorOptions } from "@mui/material";
 import { blue, green, red } from "@mui/material/colors";
 
+// MUIのテーマの型定義を拡張
 declare module '@mui/material/styles' {
+
+    // テーマの型定義
+    // paletteColorはプロパティが必要
     interface Palette {
         incomeColor: PaletteColor;
         expenseColor: PaletteColor;
         balanceColor: PaletteColor;
     }
-
+     // paletteColorOptionsはプロパティが必須ではない
     interface PaletteOptions {
-        incomeColor: PaletteColorOptions;
-        expenseColor: PaletteColorOptions;
-        balanceColor: PaletteColorOptions;
+        incomeColor?: PaletteColorOptions;
+        expenseColor?: PaletteColorOptions;
+        balanceColor?: PaletteColorOptions;
     }
 }
 

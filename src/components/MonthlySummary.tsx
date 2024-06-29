@@ -16,7 +16,7 @@ const MonthlySummary = () => {
       <Grid item xs={4} display={"flex"}>
         <Card
           sx={{
-            bgcolor: "blue",
+            bgcolor: (theme) => theme.palette.incomeColor.main,
             color: "white",
             borderRadius: "10px",
             flexGrow: 1,
@@ -49,7 +49,8 @@ const MonthlySummary = () => {
       <Grid item xs={4} display={"flex"}>
         <Card
           sx={{
-            bgcolor: "red",
+            // theme.palette.expenseColor.mainはtheme.tsで定義した色
+            bgcolor: (theme) => theme.palette.expenseColor.main,
             color: "white",
             borderRadius: "10px",
             // flexGrow:1は主軸方面（今回はrow：横）の親要素の空白を埋める
@@ -82,7 +83,8 @@ const MonthlySummary = () => {
       <Grid item xs={4} display={"flex"}>
         <Card
           sx={{
-            bgcolor: "green",
+            // theme.palette.expenseColor.mainはtheme.tsで定義した色
+            bgcolor: (theme) => theme.palette.balanceColor.main,
             color: "white",
             borderRadius: "10px",
             flexGrow: 1,
