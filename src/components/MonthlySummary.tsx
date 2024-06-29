@@ -6,9 +6,14 @@ import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 
 const MonthlySummary = () => {
   return (
+    // MUIのGridコンポーネントはflexboxを使用する
+    // だから、Grid itemはflexアイテムになる。よって、親要素の高さに合わされる。
+    // 一つでもGrid itemが大きくなれば、Grid containerが大きくなるので他のGrid itemも大きくなる。
     <Grid container spacing={{ xs: 1, sm: 2 }} mb={2}>
       {/* 収入 */}
-      <Grid item xs={4} display={"flex"} flexDirection={"column"}>
+      {/* display={"flex"}を使用するとCardがフレックスアイテムになる。 */}
+      {/* 初期値でalign-items: stretch;があるから、フレックスアイテムは親要素Grid itemの高さに合わされる */}
+      <Grid item xs={4} display={"flex"}>
         <Card
           sx={{
             bgcolor: "blue",
@@ -41,12 +46,14 @@ const MonthlySummary = () => {
         </Card>
       </Grid>
       {/* 支出*/}
-      <Grid item xs={4} display={"flex"} flexDirection={"column"}>
+      <Grid item xs={4} display={"flex"}>
         <Card
           sx={{
             bgcolor: "red",
             color: "white",
             borderRadius: "10px",
+            // flexGrow:1は主軸方面（今回はrow：横）の親要素の空白を埋める
+            // itemが複数ある場合、それぞれのitemでflexGrow:1を指定すると、それぞれのitemが同じ幅になる
             flexGrow: 1,
           }}
         >
@@ -72,7 +79,7 @@ const MonthlySummary = () => {
         </Card>
       </Grid>
       {/* 残高 */}
-      <Grid item xs={4} display={"flex"} flexDirection={"column"}>
+      <Grid item xs={4} display={"flex"}>
         <Card
           sx={{
             bgcolor: "green",
