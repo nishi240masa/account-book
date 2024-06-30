@@ -11,6 +11,8 @@ import { CssBaseline } from "@mui/material";
 import { Transaction } from "./types/index";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "./firebase";
+import { format } from "date-fns";
+import { formatMonth } from "./utils/fomatting";
 
 function App() {
   // firebaseのエラーを判定する関数
@@ -22,6 +24,11 @@ function App() {
   }
 
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  // 型推論でDate型になる
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+  // console.log(currentMonth);
+  // const a = format(currentMonth, "yyyy-MM");
+  // console.log(a);
 
   useEffect(() => {
     // awaitを使うためにasyncをつける
@@ -40,6 +47,7 @@ function App() {
           } as Transaction;
         });
         console.log(taransactionsData);
+        // 取得したデータをセット
         setTransactions(taransactionsData);
       } catch (err) {
         // エラー処理
@@ -55,6 +63,14 @@ function App() {
     fetchTransactions();
   }, []);
 
+  const monthlyTransactions = transactions.filter((transaction) => {
+    // startsWithで今月のデータだけを取得
+    // startsWithは文字列のメソッド,文字列が指定した文字列で始まるかどうかを判定
+    return transaction.date.startsWith(formatMonth(currentMonth));
+  });
+
+  console.log(monthlyTransactions);
+
   return (
     // ThemeProviderでテーマを適用
     // MUIのやつじゃなくてemotionのやつ
@@ -65,7 +81,10 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<AppLyout />}>
-            <Route index element={<Home />} />
+            <Route
+              index
+              element={<Home monthlyTransactions={monthlyTransactions} />}
+            />
             <Route path="/report" element={<Report />} />
             <Route path="*" element={<NoMatch />} />
           </Route>
