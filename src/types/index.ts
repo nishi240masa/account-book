@@ -16,3 +16,10 @@ export interface Transaction{
     type: TransactionType;
     category: ExpenseCategory | IncomeCategory;
 }
+
+// 収入,支出,残高の型を定義
+export interface Balance{
+    income:number,
+    expense:number,
+    balance:number,
+}

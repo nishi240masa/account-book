@@ -4,6 +4,7 @@ import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import { Transaction } from "../types";
+import { financeCalcukations } from "../utils/financeCalcukations";
 
 interface MonthlySummaryProps {
   monthlyTransactions: Transaction[];
@@ -11,6 +12,11 @@ interface MonthlySummaryProps {
 
 const MonthlySummary = ({ monthlyTransactions }: MonthlySummaryProps) => {
   console.log(monthlyTransactions);
+
+  // financeCalcukations関数は収入,支出,残高を計算する関数
+  // 変数income,expense,balanceに分割代入
+  const { income, expense, balance } = financeCalcukations(monthlyTransactions);
+
   return (
     // MUIのGridコンポーネントはflexboxを使用する
     // だから、Grid itemはflexアイテムになる。よって、親要素の高さに合わされる。
@@ -46,7 +52,7 @@ const MonthlySummary = ({ monthlyTransactions }: MonthlySummaryProps) => {
                 fontSize: { xs: ".8rem", sm: "1rem", md: "1.2rem" },
               }}
             >
-              ¥300
+              ¥{income}
             </Typography>
           </CardContent>
         </Card>
@@ -80,7 +86,7 @@ const MonthlySummary = ({ monthlyTransactions }: MonthlySummaryProps) => {
                 fontSize: { xs: ".8rem", sm: "1rem", md: "1.2rem" },
               }}
             >
-              ¥300
+              ¥{expense}
             </Typography>
           </CardContent>
         </Card>
@@ -112,7 +118,7 @@ const MonthlySummary = ({ monthlyTransactions }: MonthlySummaryProps) => {
                 fontSize: { xs: ".8rem", sm: "1rem", md: "1.2rem" },
               }}
             >
-              ¥300
+              ¥{balance}
             </Typography>
           </CardContent>
         </Card>
