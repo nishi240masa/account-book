@@ -6,6 +6,8 @@ import "../calendar.css";
 import { EventContentArg } from "@fullcalendar/core";
 
 const Calendar = () => {
+  // イベントの内容
+  // 配列の中にイベントのオブジェクトを入れる
   const events = [
     {
       title: "Meeting",
@@ -16,6 +18,7 @@ const Calendar = () => {
     },
   ];
 
+  // イベントの内容をカスタマイズする関数
   const renderEventContent = (eventInfo: EventContentArg) => {
     return (
       <div>
