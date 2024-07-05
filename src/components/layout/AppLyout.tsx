@@ -87,6 +87,7 @@ export default function AppLayout() {
           width: { md: `calc(100% - ${drawerWidth}px)` },
         }}
       >
+        
         <Toolbar />
         <Outlet />
       </Box>

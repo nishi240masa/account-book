@@ -72,7 +72,7 @@ function App() {
   console.log(monthlyTransactions);
 
   return (
-    // ThemeProviderでテーマを適用
+    // ThemeProviderでテーマ(theme)を適用
     // MUIのやつじゃなくてemotionのやつ
     // import { ThemeProvider } from "@emotion/react";
     <ThemeProvider theme={theme}>

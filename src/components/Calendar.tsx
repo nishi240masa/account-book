@@ -4,10 +4,18 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import jaLocale from "@fullcalendar/core/locales/ja";
 import "../calendar.css";
 import { EventContentArg } from "@fullcalendar/core";
+import { calculateDailyBalances } from "../utils/financeCalcukations";
+import { Balance, Transaction, CalenderContent } from "../types";
+import { formatCurrency } from "../utils/fomatting";
 
-const Calendar = () => {
+interface CalendarProps {
+  monthlyTransactions: Transaction[];
+}
+
+const Calendar = ({ monthlyTransactions }: CalendarProps) => {
   // イベントの内容
   // 配列の中にイベントのオブジェクトを入れる
+  // カレンダーに表示されるイベントの内容を設定する
   const events = [
     {
       title: "Meeting",
@@ -17,6 +25,28 @@ const Calendar = () => {
       balance: "¥500",
     },
   ];
+
+  // 日付ごとの収支を計算
+  const dailyBalances = calculateDailyBalances(monthlyTransactions);
+  console.log(dailyBalances);
+
+  //カレンダー用のイベントを生成する関数
+  const createCalenderEvents = (
+    dailyBalances: Record<string, Balance>
+  ): CalenderContent[] => {
+    return Object.keys(dailyBalances).map((date) => {
+      const { income, expense, balance } = dailyBalances[date];
+      return {
+        start: date,
+        income: formatCurrency(income),
+        expense: formatCurrency(expense),
+        balance: formatCurrency(balance),
+      };
+    });
+  };
+
+  const calendarEvents = createCalenderEvents(dailyBalances);
+  console.log(calendarEvents);
 
   // イベントの内容をカスタマイズする関数
   const renderEventContent = (eventInfo: EventContentArg) => {
@@ -39,7 +69,7 @@ const Calendar = () => {
       locale={jaLocale}
       plugins={[dayGridPlugin]}
       initialView="dayGridMonth"
-      events={events}
+      events={calendarEvents} //カレンダーに表示されるイベントの内容
       eventContent={renderEventContent}
     />
   );

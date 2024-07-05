@@ -23,3 +23,11 @@ export interface Balance{
     expense:number,
     balance:number,
 }
+
+// カレンダーのコンテンツの型を定義
+export interface CalenderContent {
+    start: string;
+      income: string;//1,000のようにカンマ区切りにしたいからstring型
+      expense: string;
+      balance: string;
+}
