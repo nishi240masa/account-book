@@ -34,6 +34,10 @@ const Calendar = ({ monthlyTransactions }: CalendarProps) => {
   const createCalenderEvents = (
     dailyBalances: Record<string, Balance>
   ): CalenderContent[] => {
+    // Object.keys()でオブジェクトのキーを配列で取得
+    // dateはオブジェクトのキーの配列
+    // mapメソッドで配列の要素を順番に処理
+    //分割代入でdailyBalancesオブジェクトのdateキーの要素を代入
     return Object.keys(dailyBalances).map((date) => {
       const { income, expense, balance } = dailyBalances[date];
       return {
