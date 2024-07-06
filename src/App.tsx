@@ -25,11 +25,13 @@ function App() {
 
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   // 型推論でDate型になる
+  // 初期値で今の日付を取得
   const [currentMonth, setCurrentMonth] = useState(new Date());
   // console.log(currentMonth);
   // const a = format(currentMonth, "yyyy-MM");
   // console.log(a);
 
+  // firesbaseから全部のデータを取得
   useEffect(() => {
     // awaitを使うためにasyncをつける
     // useEffectの中でasyncを使うときは即時関数を使う
@@ -63,6 +65,7 @@ function App() {
     fetchTransactions();
   }, []);
 
+  // 今月のデータだけを取得
   const monthlyTransactions = transactions.filter((transaction) => {
     // startsWithで今月のデータだけを取得
     // startsWithは文字列のメソッド,文字列が指定した文字列で始まるかどうかを判定
@@ -83,7 +86,7 @@ function App() {
           <Route path="/" element={<AppLyout />}>
             <Route
               index
-              element={<Home monthlyTransactions={monthlyTransactions} />}
+              element={<Home monthlyTransactions={monthlyTransactions} setCurrentMonth={setCurrentMonth}/>}
             />
             <Route path="/report" element={<Report />} />
             <Route path="*" element={<NoMatch />} />
