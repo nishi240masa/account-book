@@ -16,7 +16,15 @@ const Home = ({ monthlyTransactions, setCurrentMonth }: HomeProps) => {
   // 今日の日付を取得
   // date-fnsのformat関数を使って日付をフォーマット
   const today = format(new Date(), "yyyy-MM-dd");
-  const [currentDay, setCurrentDay] = useState();
+  const [currentDay, setCurrentDay] = useState(today);
+
+  // 今日の日付と一致するデータだけを取得
+  // filterメソッドで配列の要素を順番に処理
+  // transaction.date === currentDayで今日の日付と一致するデータだけを取得
+  const dailyTransactions =  monthlyTransactions.filter((transaction) => {
+    // 今日の日付と一致するデータだけを取得
+    return transaction.date === currentDay;
+  });
   return (
     <Box sx={{ display: "flex" }}>
       {/* 左側に表示するコンテンツ */}
@@ -25,11 +33,12 @@ const Home = ({ monthlyTransactions, setCurrentMonth }: HomeProps) => {
         <Calendar
           monthlyTransactions={monthlyTransactions}
           setCurrentMonth={setCurrentMonth}
+          setCurrentDay={setCurrentDay}
         />
       </Box>
       {/* 右側に表示するコンテンツ */}
       <Box>
-        <TransactionMenu />
+        <TransactionMenu dailyTransactions={dailyTransactions} currentDay={currentDay}/>
         <TransactionForm />
       </Box>
     </Box>

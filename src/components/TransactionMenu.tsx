@@ -17,7 +17,19 @@ import NotesIcon from "@mui/icons-material/Notes";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import FastfoodIcon from "@mui/icons-material/Fastfood";
 import DailySummary from "./DailySummary";
-const TransactionMenu = () => {
+import { Transaction } from "../types";
+import { formatCurrency } from "../utils/fomatting";
+import IconComponents from "./common/IconComponents";
+
+interface TransactionMenuProps {
+  dailyTransactions: Transaction[];
+  currentDay: string;
+}
+
+const TransactionMenu = ({
+  dailyTransactions,
+  currentDay,
+}: TransactionMenuProps) => {
   const menuDrawerWidth = 320;
   return (
     <Drawer
@@ -38,10 +50,12 @@ const TransactionMenu = () => {
       spacingで間の幅を指定 */}
       <Stack sx={{ height: "100%" }} spacing={2}>
         {/* 日付の表示 */}
-        <Typography fontWeight={"fontWeightBold"}>日時： 2023-12-31</Typography>
+        <Typography fontWeight={"fontWeightBold"}>
+          日時： {currentDay}
+        </Typography>
 
         {/* 収支の表示 */}
-        <DailySummary />
+        <DailySummary dailyTransactions={dailyTransactions} />
 
         {/* 内訳タイトル&内訳追加ボタン */}
         <Box
@@ -68,59 +82,66 @@ const TransactionMenu = () => {
           <List aria-label="取引履歴">
             <Stack spacing={2}>
               {/* 取引のリスト */}
-              <ListItem disablePadding>
-                {/* 中身はカードで表示 */}
-                <Card
-                  sx={{
-                    width: "100%",
-                    // 背景色をthemeで作った色に変更
-                    backgroundColor: (theme) =>
-                      theme.palette.expenseColor.light,
-                  }}
-                >
-                  <CardActionArea>
-                    <CardContent>
-                      <Grid
-                        container
-                        spacing={1}
-                        alignItems="center"
-                        wrap="wrap"
-                      >
-                        <Grid item xs={1}>
-                          {/* icon */}
-                          <FastfoodIcon />
+              {/* map関数を用いてdailyTransactionsに入ってる要素を一個づつ処理していく */}
+              {dailyTransactions.map((transaction) => (
+                <ListItem disablePadding>
+                  {/* 中身はカードで表示 */}
+                  <Card
+                    sx={{
+                      width: "100%",
+                      // 背景色をthemeで作った色に変更
+                      // transaction.typeがincomeならlightgreen,flseならlightcoral
+                      backgroundColor:
+                        transaction.type === "income"
+                          ? (theme) => theme.palette.incomeColor.light
+                          : (theme) => theme.palette.expenseColor.light,
+                    }}
+                  >
+                    <CardActionArea>
+                      <CardContent>
+                        <Grid
+                          container
+                          spacing={1}
+                          alignItems="center"
+                          wrap="wrap"
+                        >
+                          <Grid item xs={1}>
+                            {/* icon */}
+                            {IconComponents[transaction.category]}
+                          </Grid>
+                          <Grid item xs={2.5}>
+                            <Typography
+                              variant="caption"
+                              display="block"
+                              gutterBottom
+                            >
+                              {transaction.category}
+                            </Typography>
+                          </Grid>
+                          <Grid item xs={4}>
+                            <Typography variant="body2" gutterBottom>
+                              {transaction.content}
+                            </Typography>
+                          </Grid>
+                          <Grid item xs={4.5}>
+                            <Typography
+                              gutterBottom
+                              textAlign={"right"}
+                              color="text.secondary"
+                              sx={{
+                                wordBreak: "break-all",
+                              }}
+                            >
+                              {/* formatCurrencyは日本円に変換する自作関数 */}¥
+                              {formatCurrency(transaction.amount)}
+                            </Typography>
+                          </Grid>
                         </Grid>
-                        <Grid item xs={2.5}>
-                          <Typography
-                            variant="caption"
-                            display="block"
-                            gutterBottom
-                          >
-                            食費
-                          </Typography>
-                        </Grid>
-                        <Grid item xs={4}>
-                          <Typography variant="body2" gutterBottom>
-                            卵
-                          </Typography>
-                        </Grid>
-                        <Grid item xs={4.5}>
-                          <Typography
-                            gutterBottom
-                            textAlign={"right"}
-                            color="text.secondary"
-                            sx={{
-                              wordBreak: "break-all",
-                            }}
-                          >
-                            ¥300
-                          </Typography>
-                        </Grid>
-                      </Grid>
-                    </CardContent>
-                  </CardActionArea>
-                </Card>
-              </ListItem>
+                      </CardContent>
+                    </CardActionArea>
+                  </Card>
+                </ListItem>
+              ))}
             </Stack>
           </List>
         </Box>

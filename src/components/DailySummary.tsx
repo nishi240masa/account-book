@@ -1,7 +1,16 @@
 import { Box, Card, CardContent, Grid, Typography } from "@mui/material";
 import React from "react";
+import { Transaction } from "../types";
+import { financeCalcukations } from "../utils/financeCalcukations";
+import { formatCurrency } from "../utils/fomatting";
 
-const DailySummary = () => {
+interface DailySummaryProps {
+  dailyTransactions: Transaction[];
+}
+
+const DailySummary = ({ dailyTransactions }: DailySummaryProps) => {
+  // financeCalcukations関数は収入,支出,残高を計算する関数
+  const { income, expense, balance } = financeCalcukations(dailyTransactions); //変数income,expense,balanceに分割代入
   return (
     <Box>
       <Grid container spacing={2}>
@@ -21,7 +30,7 @@ const DailySummary = () => {
                 fontWeight="fontWeightBold"
                 sx={{ wordBreak: "break-all" }}
               >
-                ¥500
+                ￥{formatCurrency(income)}
               </Typography>
             </CardContent>
           </Card>
@@ -41,7 +50,7 @@ const DailySummary = () => {
                 fontWeight="fontWeightBold"
                 sx={{ wordBreak: "break-all" }}
               >
-                ¥300
+                ￥{formatCurrency(expense)}
               </Typography>
             </CardContent>
           </Card>
@@ -61,7 +70,7 @@ const DailySummary = () => {
                 fontWeight="fontWeightBold"
                 sx={{ wordBreak: "break-all" }}
               >
-                ¥200
+                ￥{formatCurrency(balance)}
               </Typography>
             </CardContent>
           </Card>

@@ -7,13 +7,19 @@ import { DatesSetArg, EventContentArg } from "@fullcalendar/core";
 import { calculateDailyBalances } from "../utils/financeCalcukations";
 import { Balance, Transaction, CalenderContent } from "../types";
 import { formatCurrency } from "../utils/fomatting";
+import interactionPlugin, { DateClickArg } from "@fullcalendar/interaction";
 
 interface CalendarProps {
   monthlyTransactions: Transaction[];
   setCurrentMonth: React.Dispatch<React.SetStateAction<Date>>;
+  setCurrentDay: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Calendar = ({ monthlyTransactions, setCurrentMonth }: CalendarProps) => {
+const Calendar = ({
+  monthlyTransactions,
+  setCurrentMonth,
+  setCurrentDay,
+}: CalendarProps) => {
   // イベントの内容
   // 配列の中にイベントのオブジェクトを入れる
   // カレンダーに表示されるイベントの内容を設定する
@@ -71,19 +77,33 @@ const Calendar = ({ monthlyTransactions, setCurrentMonth }: CalendarProps) => {
   };
 
   // カレンダーの日付が変更されたときの処理
+  // datesetInfoはカレンダーの情報
   const handleDateSet = (datesetInfo: DatesSetArg) => {
-
     // setCurrentMonth関数で現在の月をセット
+    // datesetInfo.view.currentStartはカレンダーの表示されている月の最初の日
     setCurrentMonth(datesetInfo.view.currentStart);
   };
+
+  // 日付をクリックしたときの処理
+  // dateInfoはクリックした日付の情報
+  const handleDteClick = (dateInfo: DateClickArg) => {
+    // setCurrentDay関数でクリックした日付をセット
+    // dateInfo.dateStrはクリックした日付
+    setCurrentDay(dateInfo.dateStr);
+  };
+
   return (
     <FullCalendar
       locale={jaLocale}
-      plugins={[dayGridPlugin]}
+      // dateClickを使うためにinteractionPluginをインポート
+      plugins={[dayGridPlugin, interactionPlugin]}
       initialView="dayGridMonth"
       events={calendarEvents} //カレンダーに表示されるイベントの内容
       eventContent={renderEventContent}
       datesSet={handleDateSet}
+      //fullcalendarのイベントを使って日付をクリックしたときの処理を設定
+      //fullcalendarとは別でdateClickをnpmインストールしている
+      dateClick={handleDteClick}
     />
   );
 };

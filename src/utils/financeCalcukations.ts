@@ -1,6 +1,7 @@
 import { Balance, Transaction } from '../types/index';
 
 // 引数にはTransaction型のDBから取得したデータを配列で受け取る
+//収支,支出,残高を計算する関数
 export function financeCalcukations(transactions:Transaction[]):Balance{
 
     // reduceメソッドを使って収入,支出,残高を計算
