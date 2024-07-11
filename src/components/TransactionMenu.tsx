@@ -107,6 +107,7 @@ const TransactionMenu = ({
                         >
                           <Grid item xs={1}>
                             {/* icon */}
+                            {/* 現在処理中のtransactionを指定 */}
                             {IconComponents[transaction.category]}
                           </Grid>
                           <Grid item xs={2.5}>

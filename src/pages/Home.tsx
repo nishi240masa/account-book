@@ -16,6 +16,7 @@ const Home = ({ monthlyTransactions, setCurrentMonth }: HomeProps) => {
   // 今日の日付を取得
   // date-fnsのformat関数を使って日付をフォーマット
   const today = format(new Date(), "yyyy-MM-dd");
+  // 今日の日付をstateで管理
   const [currentDay, setCurrentDay] = useState(today);
 
   // 今日の日付と一致するデータだけを取得
@@ -34,6 +35,7 @@ const Home = ({ monthlyTransactions, setCurrentMonth }: HomeProps) => {
           monthlyTransactions={monthlyTransactions}
           setCurrentMonth={setCurrentMonth}
           setCurrentDay={setCurrentDay}
+          currentDay={currentDay}
         />
       </Box>
       {/* 右側に表示するコンテンツ */}

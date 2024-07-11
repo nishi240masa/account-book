@@ -8,17 +8,20 @@ import { calculateDailyBalances } from "../utils/financeCalcukations";
 import { Balance, Transaction, CalenderContent } from "../types";
 import { formatCurrency } from "../utils/fomatting";
 import interactionPlugin, { DateClickArg } from "@fullcalendar/interaction";
+import { useTheme } from "@mui/material";
 
 interface CalendarProps {
   monthlyTransactions: Transaction[];
   setCurrentMonth: React.Dispatch<React.SetStateAction<Date>>;
   setCurrentDay: React.Dispatch<React.SetStateAction<string>>;
+  currentDay: string;
 }
 
 const Calendar = ({
   monthlyTransactions,
   setCurrentMonth,
   setCurrentDay,
+  currentDay,
 }: CalendarProps) => {
   // イベントの内容
   // 配列の中にイベントのオブジェクトを入れる
@@ -32,6 +35,8 @@ const Calendar = ({
   //     balance: "¥500",
   //   },
   // ];
+
+  const theme = useTheme();
 
   // 日付ごとの収支を計算
   const dailyBalances = calculateDailyBalances(monthlyTransactions);
@@ -59,6 +64,14 @@ const Calendar = ({
   const calendarEvents = createCalenderEvents(dailyBalances);
   console.log(calendarEvents);
 
+  const backgroundEvent = {
+    start: currentDay,
+    end: currentDay,
+    display: "background",
+    backgroundColor: theme.palette.incomeColor.light,
+  };
+
+  console.log([...calendarEvents, backgroundEvent]);
   // イベントの内容をカスタマイズする関数
   const renderEventContent = (eventInfo: EventContentArg) => {
     return (
@@ -78,6 +91,7 @@ const Calendar = ({
 
   // カレンダーの日付が変更されたときの処理
   // datesetInfoはカレンダーの情報
+  // 月の日付取得
   const handleDateSet = (datesetInfo: DatesSetArg) => {
     // setCurrentMonth関数で現在の月をセット
     // datesetInfo.view.currentStartはカレンダーの表示されている月の最初の日
@@ -98,7 +112,9 @@ const Calendar = ({
       // dateClickを使うためにinteractionPluginをインポート
       plugins={[dayGridPlugin, interactionPlugin]}
       initialView="dayGridMonth"
-      events={calendarEvents} //カレンダーに表示されるイベントの内容
+      // カレンダーに表示されるイベントの内容
+      // Eventとバックグラウンドイベントを配列で統合
+      events={[...calendarEvents, backgroundEvent]}
       eventContent={renderEventContent}
       datesSet={handleDateSet}
       //fullcalendarのイベントを使って日付をクリックしたときの処理を設定
