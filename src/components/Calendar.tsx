@@ -9,12 +9,14 @@ import { Balance, Transaction, CalenderContent } from "../types";
 import { formatCurrency } from "../utils/fomatting";
 import interactionPlugin, { DateClickArg } from "@fullcalendar/interaction";
 import { useTheme } from "@mui/material";
+import { isSameMonth } from "date-fns";
 
 interface CalendarProps {
   monthlyTransactions: Transaction[];
   setCurrentMonth: React.Dispatch<React.SetStateAction<Date>>;
   setCurrentDay: React.Dispatch<React.SetStateAction<string>>;
   currentDay: string;
+  today: string;
 }
 
 const Calendar = ({
@@ -22,6 +24,7 @@ const Calendar = ({
   setCurrentMonth,
   setCurrentDay,
   currentDay,
+  today,
 }: CalendarProps) => {
   // イベントの内容
   // 配列の中にイベントのオブジェクトを入れる
@@ -92,10 +95,22 @@ const Calendar = ({
   // カレンダーの日付が変更されたときの処理
   // datesetInfoはカレンダーの情報
   // 月の日付取得
+  //
   const handleDateSet = (datesetInfo: DatesSetArg) => {
     // setCurrentMonth関数で現在の月をセット
     // datesetInfo.view.currentStartはカレンダーの表示されている月の最初の日
-    setCurrentMonth(datesetInfo.view.currentStart);
+    const currentMonth = datesetInfo.view.currentStart;
+    setCurrentMonth(currentMonth);
+
+    const todayDate = new Date();
+
+    // 今日の日付が表示されている月と同じ月かどうかを判定
+    // isSameMonthはdate-fnsの関数,引数に2つの日付を取り、同じ月かどうかを判定
+    if (isSameMonth(todayDate, currentMonth)) {
+      // todayが表示されている月と同じ月なら
+      // setCurrentDay関数で今日の日付をセット
+      setCurrentDay(today);
+    }
   };
 
   // 日付をクリックしたときの処理
@@ -116,6 +131,7 @@ const Calendar = ({
       // Eventとバックグラウンドイベントを配列で統合
       events={[...calendarEvents, backgroundEvent]}
       eventContent={renderEventContent}
+      // イベントの日付が変更されたときの処理を設定
       datesSet={handleDateSet}
       //fullcalendarのイベントを使って日付をクリックしたときの処理を設定
       //fullcalendarとは別でdateClickをnpmインストールしている
