@@ -12,14 +12,24 @@ import {
 import React from "react";
 import CloseIcon from "@mui/icons-material/Close"; // 閉じるボタン用のアイコン
 import FastfoodIcon from "@mui/icons-material/Fastfood"; //食事アイコン
-const TransactionForm = () => {
+
+interface TransactionFormProps {
+  onCloseForm: () => void;
+  isEntryDrawerOpen: boolean;
+}
+
+const TransactionForm = ({
+  onCloseForm,
+  isEntryDrawerOpen,
+}: TransactionFormProps) => {
   const formWidth = 320;
+
   return (
     <Box
       sx={{
         position: "fixed",
         top: 64,
-        right: formWidth, // フォームの位置を調整
+        right: isEntryDrawerOpen ? formWidth : "-2%", // フォームの位置を調整
         width: formWidth,
         height: "100%",
         bgcolor: "background.paper",
@@ -37,8 +47,9 @@ const TransactionForm = () => {
       {/* 入力エリアヘッダー */}
       <Box display={"flex"} justifyContent={"space-between"} mb={2}>
         <Typography variant="h6">入力</Typography>
-        {/* 閉じるボタン */}
+        {/* 閉じるボタン Icon */}
         <IconButton
+          onClick={onCloseForm}
           sx={{
             color: (theme) => theme.palette.grey[500],
           }}
@@ -48,6 +59,7 @@ const TransactionForm = () => {
       </Box>
       {/* フォーム要素 */}
       <Box component={"form"}>
+        {/* Stack内にボタンを入れることで均等に並べられる */}
         <Stack spacing={2}>
           {/* 収支切り替えボタン */}
           <ButtonGroup fullWidth>

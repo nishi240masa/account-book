@@ -19,13 +19,27 @@ const Home = ({ monthlyTransactions, setCurrentMonth }: HomeProps) => {
   // 今日の日付をstateで管理
   const [currentDay, setCurrentDay] = useState(today);
 
+  // Formの開閉状態を管理するstate
+  // falseで閉じている状態
+  const [isEntryDrawerOpen, setIsEntryDrawerOpen] = useState(false);
+
   // 今日の日付と一致するデータだけを取得
   // filterメソッドで配列の要素を順番に処理
   // transaction.date === currentDayで今日の日付と一致するデータだけを取得
-  const dailyTransactions =  monthlyTransactions.filter((transaction) => {
+  const dailyTransactions = monthlyTransactions.filter((transaction) => {
     // 今日の日付と一致するデータだけを取得
     return transaction.date === currentDay;
   });
+
+  const closeForm = () => {
+    setIsEntryDrawerOpen(!isEntryDrawerOpen);
+  };
+
+  // formの開閉処理
+  const handleAddTransactionForm = () => {
+    setIsEntryDrawerOpen(!isEntryDrawerOpen);
+  };
+
   return (
     <Box sx={{ display: "flex" }}>
       {/* 左側に表示するコンテンツ */}
@@ -41,8 +55,15 @@ const Home = ({ monthlyTransactions, setCurrentMonth }: HomeProps) => {
       </Box>
       {/* 右側に表示するコンテンツ */}
       <Box>
-        <TransactionMenu dailyTransactions={dailyTransactions} currentDay={currentDay}/>
-        <TransactionForm />
+        <TransactionMenu
+          dailyTransactions={dailyTransactions}
+          currentDay={currentDay}
+          onAddTransactionForm={handleAddTransactionForm}
+        />
+        <TransactionForm
+          onCloseForm={closeForm}
+          isEntryDrawerOpen={isEntryDrawerOpen}
+        />
       </Box>
     </Box>
   );
