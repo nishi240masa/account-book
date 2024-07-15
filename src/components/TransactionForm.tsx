@@ -35,8 +35,16 @@ interface TransactionFormProps {
   onCloseForm: () => void;
   isEntryDrawerOpen: boolean;
   currentDay: string;
-  onSaveTransaction: (transaction: Schema) => void;
+  onSaveTransaction: (transaction: Schema) => Promise<void>;
   selectedTransaction: Transaction | null;
+  onDeleteTransaction: (TransactionID: string) => void;
+  setSelectedTransaction: React.Dispatch<
+    React.SetStateAction<Transaction | null>
+  >;
+  onUpdateTransaction: (
+    transaction: Schema,
+    transactionId: string
+  ) => Promise<void>;
 }
 
 type IncomeExpense = "income" | "expense";
@@ -52,6 +60,9 @@ const TransactionForm = ({
   currentDay,
   onSaveTransaction,
   selectedTransaction,
+  onDeleteTransaction,
+  setSelectedTransaction,
+  onUpdateTransaction,
 }: TransactionFormProps) => {
   const formWidth = 320;
 
@@ -112,7 +123,24 @@ const TransactionForm = ({
 
   // フォームの送信処理
   const onSubmit: SubmitHandler<Schema> = (data) => {
-    onSaveTransaction(data);
+    if (selectedTransaction) {
+      onUpdateTransaction(data, selectedTransaction.id)
+        .then(() => {
+          // console.log("更新しました");
+          setSelectedTransaction(null);
+        })
+        .catch((error) => {
+          console.error("更新に失敗しました", error);
+        });
+    } else {
+      onSaveTransaction(data)
+        .then(() => {
+          console.log("保存しました");
+        })
+        .catch((error) => {
+          console.error("更新に失敗しました", error);
+        });
+    }
 
     // フォームのリセット
     // resetメソッドはreact-hook-formのメソッド
@@ -125,6 +153,16 @@ const TransactionForm = ({
     }); //defaultValuesで設定した初期値に戻すとundefinedになる可能性があるので、再度初期値を設定
   };
 
+  useEffect(() => {
+    // 選択肢が更新されたからフォームの値を更新
+    if (selectedTransaction) {
+      const categoryExits = categories.some(
+        (category) => category.label === selectedTransaction.category
+      );
+      setValue("category", categoryExits ? selectedTransaction.category : "");
+    }
+  }, [selectedTransaction, categories]);
+
   // selectedTransactionが変更されたらフォームに値をセット
   useEffect(() => {
     // selectedTransactionがある場合はフォームに値をセット
@@ -132,7 +170,6 @@ const TransactionForm = ({
       setValue("type", selectedTransaction.type);
       setValue("date", selectedTransaction.date);
       setValue("amount", selectedTransaction.amount);
-      setValue("category", selectedTransaction.category);
       setValue("content", selectedTransaction.content);
     } else {
       reset({
@@ -144,6 +181,14 @@ const TransactionForm = ({
       });
     }
   }, [selectedTransaction]);
+
+  // データ削除処理
+  const handleDelete = () => {
+    if (selectedTransaction) {
+      onDeleteTransaction(selectedTransaction?.id);
+      setSelectedTransaction(null);
+    }
+  };
 
   return (
     <Box
@@ -295,8 +340,18 @@ const TransactionForm = ({
             color={currentType === "income" ? "primary" : "error"}
             fullWidth
           >
-            保存
+            {selectedTransaction ? "更新" : "保存"}
           </Button>
+          {selectedTransaction && (
+            <Button
+              onClick={handleDelete}
+              variant="outlined"
+              color={"secondary"}
+              fullWidth
+            >
+              削除
+            </Button>
+          )}
         </Stack>
       </Box>
     </Box>

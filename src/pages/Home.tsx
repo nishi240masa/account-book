@@ -12,12 +12,16 @@ interface HomeProps {
   monthlyTransactions: Transaction[];
   setCurrentMonth: React.Dispatch<React.SetStateAction<Date>>;
   onSaveTransaction: (transaction: Schema) => Promise<void>;
+  onDeleteTransaction: (TransactionID: string) => Promise<void>;
+  onUpdateTransaction: (transaction: Schema, transactionID: string) => Promise<void>
 }
 
 const Home = ({
   monthlyTransactions,
   setCurrentMonth,
   onSaveTransaction,
+  onDeleteTransaction,
+  onUpdateTransaction,
 }: HomeProps) => {
   // 今日の日付を取得
   // date-fnsのformat関数を使って日付をフォーマット
@@ -28,7 +32,8 @@ const Home = ({
   // Formの開閉状態を管理するstate
   // falseで閉じている状態
   const [isEntryDrawerOpen, setIsEntryDrawerOpen] = useState(false);
-  const [selectedTransaction, setSelectedTransaction] =useState<Transaction | null>(null);
+  const [selectedTransaction, setSelectedTransaction] =
+    useState<Transaction | null>(null);
 
   // 今日の日付と一致するデータだけを取得
   // filterメソッドで配列の要素を順番に処理
@@ -85,6 +90,9 @@ const Home = ({
           currentDay={currentDay}
           onSaveTransaction={onSaveTransaction}
           selectedTransaction={selectedTransaction}
+          onDeleteTransaction={onDeleteTransaction}
+          setSelectedTransaction={setSelectedTransaction}
+          onUpdateTransaction={onUpdateTransaction}
         />
       </Box>
     </Box>

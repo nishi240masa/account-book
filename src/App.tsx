@@ -9,7 +9,14 @@ import { theme } from "./theme/theme";
 import { ThemeProvider } from "@emotion/react";
 import { CssBaseline } from "@mui/material";
 import { Transaction } from "./types/index";
-import { addDoc, collection, getDocs } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "./firebase";
 import { format } from "date-fns";
 import { formatMonth } from "./utils/fomatting";
@@ -101,6 +108,54 @@ function App() {
     }
   };
 
+  const handleDeleteTransaction = async (transactionID: string) => {
+    // firebaseからデータを削除
+    try {
+      await deleteDoc(doc(db, "Transactions", transactionID));
+
+      const filterdTransactions = transactions.filter(
+        (transaction) => transaction.id !== transactionID
+      );
+      setTransactions(filterdTransactions); //setTransactionsは削除したデータを除いたデータをセット
+    } catch (err) {
+      // エラー処理
+      if (isFirebaseError(err)) {
+        console.error("Firestore Error:", err);
+        // console.error("Firebase Error code:", err.code);
+        // console.error("Firebase Error message:", err.message);
+      } else {
+        console.error("一般的なエラー", err);
+      }
+    }
+  };
+
+  const handleUpdateTransaction = async (
+    transaction: Schema,
+    transactionId: string
+  ) => {
+    try {
+      // firebaseにデータを更新
+      const docRef = doc(db, "Transactions", transactionId);
+
+      //ここの下に更新処理を書く
+      await updateDoc(docRef, transaction);
+      // 更新したデータをセット
+      const updatedTransactions = transactions.map((t) =>
+        t.id === transactionId ? { ...t, ...transaction } : t
+      ) as Transaction[];
+      setTransactions(updatedTransactions);
+    } catch (err) {
+      // エラー処理
+      if (isFirebaseError(err)) {
+        console.error("Firestore Error:", err);
+        // console.error("Firebase Error code:", err.code);
+        // console.error("Firebase Error message:", err.message);
+      } else {
+        console.error("一般的なエラー", err);
+      }
+    }
+  };
+
   return (
     // ThemeProviderでテーマ(theme)を適用
     // MUIのやつじゃなくてemotionのやつ
@@ -118,6 +173,8 @@ function App() {
                   monthlyTransactions={monthlyTransactions}
                   setCurrentMonth={setCurrentMonth}
                   onSaveTransaction={handleSaveTransaction}
+                  onDeleteTransaction={handleDeleteTransaction}
+                  onUpdateTransaction={handleUpdateTransaction}
                 />
               }
             />
