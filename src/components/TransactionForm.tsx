@@ -18,7 +18,7 @@ import {
   SubmitHandler,
   useForm,
 } from "react-hook-form";
-import { ExpenseCategory, IncomeCategory } from "../types";
+import { ExpenseCategory, IncomeCategory, Transaction } from "../types";
 import AlarmIcon from "@mui/icons-material/Alarm";
 import AddHomeIcon from "@mui/icons-material/AddHome";
 import Diversity3Icon from "@mui/icons-material/Diversity3";
@@ -35,6 +35,7 @@ interface TransactionFormProps {
   isEntryDrawerOpen: boolean;
   currentDay: string;
   onSaveTransaction: (transaction: Schema) => void;
+  selectedTransaction: Transaction | null;
 }
 
 type IncomeExpense = "income" | "expense";
@@ -49,6 +50,7 @@ const TransactionForm = ({
   isEntryDrawerOpen,
   currentDay,
   onSaveTransaction,
+  selectedTransaction,
 }: TransactionFormProps) => {
   const formWidth = 320;
 
@@ -121,6 +123,18 @@ const TransactionForm = ({
       content: "",
     }); //defaultValuesで設定した初期値に戻すとundefinedになる可能性があるので、再度初期値を設定
   };
+
+  // selectedTransactionが変更されたらフォームに値をセット
+  useEffect(() => {
+    // selectedTransactionがある場合はフォームに値をセット
+    if (selectedTransaction) {
+      setValue("type", selectedTransaction.type);
+      setValue("date", selectedTransaction.date);
+      setValue("amount", selectedTransaction.amount);
+      setValue("category", selectedTransaction.category);
+      setValue("content", selectedTransaction.content);
+    }
+  }, [selectedTransaction]);
 
   return (
     <Box

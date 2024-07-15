@@ -11,15 +11,19 @@ import { Schema } from "../validations/schema";
 interface HomeProps {
   monthlyTransactions: Transaction[];
   setCurrentMonth: React.Dispatch<React.SetStateAction<Date>>;
-  onSaveTransaction: (
-    transaction: Schema,
-  ) => Promise<void>;
+  onSaveTransaction: (transaction: Schema) => Promise<void>;
+  selectedTransaction: Transaction | null;
+  setSelectedTransaction: React.Dispatch<
+    React.SetStateAction<Transaction | null>
+  >;
 }
 
 const Home = ({
   monthlyTransactions,
   setCurrentMonth,
   onSaveTransaction,
+  selectedTransaction,
+  setSelectedTransaction,
 }: HomeProps) => {
   // 今日の日付を取得
   // date-fnsのformat関数を使って日付をフォーマット
@@ -45,7 +49,14 @@ const Home = ({
 
   // formの開閉処理
   const handleAddTransactionForm = () => {
+    setSelectedTransaction(null); //内訳追加ボタンを押されたら、formを空にする
     setIsEntryDrawerOpen(!isEntryDrawerOpen);
+  };
+
+  // 取引cardをクリックしたときの処理
+  const handleSelectTransaction = (transaction: Transaction) => {
+    setIsEntryDrawerOpen(true);
+    setSelectedTransaction(transaction);
   };
 
   return (
@@ -67,12 +78,14 @@ const Home = ({
           dailyTransactions={dailyTransactions}
           currentDay={currentDay}
           onAddTransactionForm={handleAddTransactionForm}
+          onSelectTransaction={handleSelectTransaction}
         />
         <TransactionForm
           onCloseForm={closeForm}
           isEntryDrawerOpen={isEntryDrawerOpen}
           currentDay={currentDay}
           onSaveTransaction={onSaveTransaction}
+          selectedTransaction={selectedTransaction}
         />
       </Box>
     </Box>

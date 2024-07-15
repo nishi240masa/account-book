@@ -28,9 +28,7 @@ function App() {
   // 型推論でDate型になる
   // 初期値で今の日付を取得
   const [currentMonth, setCurrentMonth] = useState(new Date());
-  // console.log(currentMonth);
-  // const a = format(currentMonth, "yyyy-MM");
-  // console.log(a);
+  const [selectedTransaction, setSelectedTransaction] =useState<Transaction | null>(null);
 
   // firesbaseから全部のデータを取得
   useEffect(() => {
@@ -121,6 +119,8 @@ function App() {
                   monthlyTransactions={monthlyTransactions}
                   setCurrentMonth={setCurrentMonth}
                   onSaveTransaction={handleSaveTransaction}
+                  selectedTransaction={selectedTransaction}
+                  setSelectedTransaction={setSelectedTransaction}
                 />
               }
             />
