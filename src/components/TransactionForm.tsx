@@ -22,6 +22,8 @@ import TrainIcon from "@mui/icons-material/Train";
 import WorkIcon from "@mui/icons-material/Work";
 import AddBusinessIcon from "@mui/icons-material/AddBusiness";
 import SavingsIcon from "@mui/icons-material/Savings";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { taransactionSchema } from "../validations/schema";
 
 interface TransactionFormProps {
   onCloseForm: () => void;
@@ -61,7 +63,13 @@ const TransactionForm = ({
   const [categories, setcategories] = useState(expenseCategories);
 
   // フォームの初期値を設定
-  const { control, setValue, watch } = useForm({
+  const {
+    control,
+    setValue,
+    watch,
+    formState: { errors },
+    handleSubmit,
+  } = useForm({
     defaultValues: {
       type: "expense",
       date: currentDay,
@@ -69,7 +77,9 @@ const TransactionForm = ({
       category: "",
       content: "",
     },
+    resolver: zodResolver(taransactionSchema),
   });
+  console.log(errors);
 
   const incomeExpenseToggle = (type: IncomeExpense) => () => {
     setValue("type", type);
@@ -87,6 +97,10 @@ const TransactionForm = ({
   useEffect(() => {
     setValue("date", currentDay);
   }, [currentDay]);
+
+  const onSubmit = (data: any) => {
+    console.log(data);
+  };
 
   return (
     <Box
@@ -122,7 +136,7 @@ const TransactionForm = ({
         </IconButton>
       </Box>
       {/* フォーム要素 */}
-      <Box component={"form"}>
+      <Box component={"form"} onSubmit={handleSubmit(onSubmit)}>
         {/* Stack内にボタンを入れることで均等に並べられる */}
         <Stack spacing={2}>
           {/* 収支切り替えボタン */}
@@ -162,6 +176,10 @@ const TransactionForm = ({
                 InputLabelProps={{
                   shrink: true,
                 }}
+                // ！！はboolean型に変換するため
+                error={!!errors.date} //errosオブジェクトにdateがあればtrue
+                // ?はdateがあればerrors.date.messageを表示
+                helperText={errors.date?.message} //dateのエラーメッセージを表示
               />
             )}
           />
@@ -170,9 +188,18 @@ const TransactionForm = ({
             name="category"
             control={control}
             render={({ field }) => (
-              <TextField {...field} id="カテゴリ" label="カテゴリ" select>
-                {categories.map((category) => (
-                  <MenuItem value={category.label}>
+              <TextField
+                // ！！はboolean型に変換するため
+                error={!!errors.category}
+                // ?はcategoryがあればerrors.category.messageを表示
+                helperText={errors.category?.message}
+                {...field}
+                id="カテゴリ"
+                label="カテゴリ"
+                select
+              >
+                {categories.map((category, index) => (
+                  <MenuItem value={category.label} key={index}>
                     <ListItemIcon>{category.icon}</ListItemIcon>
                     {category.label}
                   </MenuItem>
@@ -185,8 +212,12 @@ const TransactionForm = ({
           <Controller
             name="amount"
             control={control}
-            render={({ field }) => (
+            render={({ field }) => {
+              console.log(field);
+              return (
               <TextField
+                error={!!errors.amount}
+                helperText={errors.amount?.message}
                 {...field}
                 value={field.value === 0 ? "" : field.value}
                 onChange={(e) => {
@@ -196,14 +227,22 @@ const TransactionForm = ({
                 label="金額"
                 type="number"
               />
-            )}
+              );
+            }}
           />
           {/* 内容 */}
           <Controller
             name="content"
             control={control}
             render={({ field }) => (
-              <TextField {...field} label="内容" type="text" />
+              <TextField
+                // ！！はboolean型に変換するため
+                error={!!errors.content}
+                helperText={errors.content?.message}
+                {...field}
+                label="内容"
+                type="text"
+              />
             )}
           />
           {/* 保存ボタン */}

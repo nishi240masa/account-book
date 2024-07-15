@@ -9,6 +9,7 @@
     "@fullcalendar/daygrid": "^6.1.14",
     "@fullcalendar/interaction": "^6.1.14",
     "@fullcalendar/react": "^6.1.14",
+    "@hookform/resolvers": "^3.9.0",
     "@mui/icons-material": "^5.15.20",
     "@mui/material": "^5.15.20",
     "@testing-library/jest-dom": "^5.17.0",
