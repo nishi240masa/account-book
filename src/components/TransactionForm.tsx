@@ -29,6 +29,7 @@ import AddBusinessIcon from "@mui/icons-material/AddBusiness";
 import SavingsIcon from "@mui/icons-material/Savings";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Schema, taransactionSchema } from "../validations/schema";
+import { date } from "zod";
 
 interface TransactionFormProps {
   onCloseForm: () => void;
@@ -133,6 +134,14 @@ const TransactionForm = ({
       setValue("amount", selectedTransaction.amount);
       setValue("category", selectedTransaction.category);
       setValue("content", selectedTransaction.content);
+    } else {
+      reset({
+        type: "expense",
+        date: currentDay,
+        amount: 0,
+        category: "",
+        content: "",
+      });
     }
   }, [selectedTransaction]);
 

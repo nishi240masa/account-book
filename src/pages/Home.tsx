@@ -45,12 +45,16 @@ const Home = ({
 
   const closeForm = () => {
     setIsEntryDrawerOpen(!isEntryDrawerOpen);
+    setSelectedTransaction(null);
   };
 
   // formの開閉処理
   const handleAddTransactionForm = () => {
-    setSelectedTransaction(null); //内訳追加ボタンを押されたら、formを空にする
-    setIsEntryDrawerOpen(!isEntryDrawerOpen);
+    if (selectedTransaction) {
+      setSelectedTransaction(null); //内訳追加ボタンを押されたら、formを空にする
+    } else {
+      setIsEntryDrawerOpen(!isEntryDrawerOpen);
+    }
   };
 
   // 取引cardをクリックしたときの処理
