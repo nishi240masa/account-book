@@ -1,17 +1,22 @@
-import { Grid } from "@mui/material";
+import { Grid, Paper } from "@mui/material";
 import React from "react";
 
 const Report = () => {
+  const commonPaperStyle = {
+    height: { xs: "auto", md: "400px" },
+    display: "flex",
+    flexDirection: "column",
+  };
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
         日付
       </Grid>
       <Grid item xs={12} md={4}>
-        カテゴリグラフ
+        <Paper sx={commonPaperStyle}>カテゴリグラフ</Paper>
       </Grid>
       <Grid item xs={12} md={8}>
-        棒グラフ
+        <Paper sx={commonPaperStyle}>棒グラフ</Paper>
       </Grid>
       <Grid item xs={12}>
         テーブル
