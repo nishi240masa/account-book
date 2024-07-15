@@ -12,7 +12,12 @@ import {
 import React, { useEffect, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close"; // 閉じるボタン用のアイコン
 import FastfoodIcon from "@mui/icons-material/Fastfood"; //食事アイコン
-import { Controller, useForm } from "react-hook-form";
+import {
+  Controller,
+  SubmitErrorHandler,
+  SubmitHandler,
+  useForm,
+} from "react-hook-form";
 import { ExpenseCategory, IncomeCategory } from "../types";
 import AlarmIcon from "@mui/icons-material/Alarm";
 import AddHomeIcon from "@mui/icons-material/AddHome";
@@ -23,12 +28,13 @@ import WorkIcon from "@mui/icons-material/Work";
 import AddBusinessIcon from "@mui/icons-material/AddBusiness";
 import SavingsIcon from "@mui/icons-material/Savings";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { taransactionSchema } from "../validations/schema";
+import { Schema, taransactionSchema } from "../validations/schema";
 
 interface TransactionFormProps {
   onCloseForm: () => void;
   isEntryDrawerOpen: boolean;
   currentDay: string;
+  onSaveTransaction: (transaction: Schema) => void;
 }
 
 type IncomeExpense = "income" | "expense";
@@ -42,6 +48,7 @@ const TransactionForm = ({
   onCloseForm,
   isEntryDrawerOpen,
   currentDay,
+  onSaveTransaction,
 }: TransactionFormProps) => {
   const formWidth = 320;
 
@@ -69,7 +76,8 @@ const TransactionForm = ({
     watch,
     formState: { errors },
     handleSubmit,
-  } = useForm({
+    reset,
+  } = useForm<Schema>({
     defaultValues: {
       type: "expense",
       date: currentDay,
@@ -83,6 +91,7 @@ const TransactionForm = ({
 
   const incomeExpenseToggle = (type: IncomeExpense) => () => {
     setValue("type", type);
+    setValue("category", ""); //カテゴリーをリセット
   };
 
   // 現在の収支タイプを取得
@@ -98,8 +107,19 @@ const TransactionForm = ({
     setValue("date", currentDay);
   }, [currentDay]);
 
-  const onSubmit = (data: any) => {
-    console.log(data);
+  // フォームの送信処理
+  const onSubmit: SubmitHandler<Schema> = (data) => {
+    onSaveTransaction(data);
+
+    // フォームのリセット
+    // resetメソッドはreact-hook-formのメソッド
+    reset({
+      type: "expense",
+      date: currentDay,
+      amount: 0,
+      category: "",
+      content: "",
+    }); //defaultValuesで設定した初期値に戻すとundefinedになる可能性があるので、再度初期値を設定
   };
 
   return (
@@ -215,18 +235,18 @@ const TransactionForm = ({
             render={({ field }) => {
               console.log(field);
               return (
-              <TextField
-                error={!!errors.amount}
-                helperText={errors.amount?.message}
-                {...field}
-                value={field.value === 0 ? "" : field.value}
-                onChange={(e) => {
-                  const newValue = parseInt(e.target.value, 10) || 0;
-                  field.onChange(newValue);
-                }}
-                label="金額"
-                type="number"
-              />
+                <TextField
+                  error={!!errors.amount}
+                  helperText={errors.amount?.message}
+                  {...field}
+                  value={field.value === 0 ? "" : field.value}
+                  onChange={(e) => {
+                    const newValue = parseInt(e.target.value, 10) || 0;
+                    field.onChange(newValue);
+                  }}
+                  label="金額"
+                  type="number"
+                />
               );
             }}
           />

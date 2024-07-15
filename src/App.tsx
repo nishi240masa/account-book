@@ -9,10 +9,11 @@ import { theme } from "./theme/theme";
 import { ThemeProvider } from "@emotion/react";
 import { CssBaseline } from "@mui/material";
 import { Transaction } from "./types/index";
-import { collection, getDocs } from "firebase/firestore";
+import { addDoc, collection, getDocs } from "firebase/firestore";
 import { db } from "./firebase";
 import { format } from "date-fns";
 import { formatMonth } from "./utils/fomatting";
+import { Schema } from "./validations/schema";
 
 function App() {
   // firebaseのエラーを判定する関数
@@ -72,7 +73,36 @@ function App() {
     return transaction.date.startsWith(formatMonth(currentMonth));
   });
 
-  console.log(monthlyTransactions);
+  // firebaseにデータを保存する関数
+  const handleSaveTransaction = async (transation: Schema) => {
+    try {
+      // firebaseにデータを保存
+      // addDocでデータを追加
+      // addDocではidを自動で生成してくれる
+      const docRef = await addDoc(collection(db, "Transactions"), transation);
+      console.log("Document written with ID: ", docRef.id);
+
+      const newTransaction = {
+        id: docRef.id, //生成されたid
+        ...transation, //送られてきたデータをスプレット構文で展開
+      } as Transaction; //型アサーション
+      // 空文字が入らないことは開発者はわかっているから、型アサーションを使っている
+      // 保存したデータを状態を管理しているtransactions配列に追加
+      setTransactions((prevTransactions) => [
+        ...prevTransactions, //prevTransactionsは直前のデータ
+        newTransaction,
+      ]);
+    } catch (err) {
+      // エラー処理
+      if (isFirebaseError(err)) {
+        console.error("Firestore Error:", err);
+        // console.error("Firebase Error code:", err.code);
+        // console.error("Firebase Error message:", err.message);
+      } else {
+        console.error("一般的なエラー", err);
+      }
+    }
+  };
 
   return (
     // ThemeProviderでテーマ(theme)を適用
@@ -86,7 +116,13 @@ function App() {
           <Route path="/" element={<AppLyout />}>
             <Route
               index
-              element={<Home monthlyTransactions={monthlyTransactions} setCurrentMonth={setCurrentMonth}/>}
+              element={
+                <Home
+                  monthlyTransactions={monthlyTransactions}
+                  setCurrentMonth={setCurrentMonth}
+                  onSaveTransaction={handleSaveTransaction}
+                />
+              }
             />
             <Route path="/report" element={<Report />} />
             <Route path="*" element={<NoMatch />} />
