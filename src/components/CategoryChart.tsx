@@ -1,7 +1,7 @@
 import React from "react";
 
-function CtegoryChart() {
+function CategoryChart() {
   return <div>CtegoryChart</div>;
 }
 
-export default CtegoryChart;
+export default CategoryChart;

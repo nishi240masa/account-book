@@ -35,6 +35,8 @@ function App() {
   // 型推論でDate型になる
   // 初期値で今の日付を取得
   const [currentMonth, setCurrentMonth] = useState(new Date());
+  // 値が取得されるまでローディングを表示
+  const [isLoading, setIsLoading] = useState(true);
 
   // firesbaseから全部のデータを取得
   useEffect(() => {
@@ -65,6 +67,9 @@ function App() {
         } else {
           console.error("一般的なエラー", err);
         }
+      } finally {
+        //catchでエラーが出てもfinallyは必ず実行される
+        setIsLoading(false);
       }
     };
     fetchTransactions();
@@ -178,7 +183,17 @@ function App() {
                 />
               }
             />
-            <Route path="/report" element={<Report currentMonth={currentMonth} setCurrentMonth={setCurrentMonth} />} />
+            <Route
+              path="/report"
+              element={
+                <Report
+                  currentMonth={currentMonth}
+                  setCurrentMonth={setCurrentMonth}
+                  monthlyTransactions={monthlyTransactions}
+                  isLoading={isLoading}
+                />
+              }
+            />
             <Route path="*" element={<NoMatch />} />
           </Route>
         </Routes>
