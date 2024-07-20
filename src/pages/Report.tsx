@@ -1,5 +1,9 @@
 import { Grid, Paper } from "@mui/material";
 import React from "react";
+import MonthlySelector from "../components/MonthlySelector";
+import CtegoryChart from "../components/CtegoryChart";
+import BarChart from "../components/BarChart";
+import TransactionTable from "../components/TransactionTable";
 
 const Report = () => {
   const commonPaperStyle = {
@@ -10,16 +14,21 @@ const Report = () => {
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
+        <MonthlySelector />
         日付
       </Grid>
       <Grid item xs={12} md={4}>
-        <Paper sx={commonPaperStyle}>カテゴリグラフ</Paper>
+        <Paper sx={commonPaperStyle}>
+          <CtegoryChart />
+        </Paper>
       </Grid>
       <Grid item xs={12} md={8}>
-        <Paper sx={commonPaperStyle}>棒グラフ</Paper>
+        <Paper sx={commonPaperStyle}>
+          <BarChart />
+        </Paper>
       </Grid>
       <Grid item xs={12}>
-        テーブル
+        <TransactionTable />
       </Grid>
     </Grid>
   );
