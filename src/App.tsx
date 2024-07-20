@@ -18,7 +18,6 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { db } from "./firebase";
-import { format } from "date-fns";
 import { formatMonth } from "./utils/fomatting";
 import { Schema } from "./validations/schema";
 
