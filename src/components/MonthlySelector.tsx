@@ -5,8 +5,44 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 // date-fnsの日本語化のためのimport
 import { ja } from "date-fns/locale";
+import { addMonths } from "date-fns";
 
-const MonthlySelector = () => {
+interface MonthlySelectorProps {
+  currentMonth: Date;
+  setCurrentMonth: React.Dispatch<React.SetStateAction<Date>>;
+}
+
+const MonthlySelector = ({
+  currentMonth,
+  setCurrentMonth,
+}: MonthlySelectorProps) => {
+  // 前月に移動する関数
+  const handlePreviousMonth = () => {
+    // addMonthsはdate-fnsの関数
+    // currentMonthの値を-1することで前月に移動
+    const previewMonth = addMonths(currentMonth, -1);
+    setCurrentMonth(previewMonth);
+  };
+
+  //   次月に移動する関数
+  const handleNextMonth = () => {
+    // addMonthsはdate-fnsの関数
+    // currentMonthの値を-1することで前月に移動
+    const previewMonth = addMonths(currentMonth, +1);
+    setCurrentMonth(previewMonth);
+  };
+
+  //   日付が変更されたときの処理
+  //   newDateは日付が変更されたときの値
+  //   今回は初期値を与えているが、nullの場合もあるため、nullを許容するためにDate | nullとしている
+  const handleDateChange = (newDate: Date | null) => {
+    // newDateが存在する場合にのみ処理を行う
+    // stateにnullを設定することはできないため、nullの場合は処理を行わない
+    if (newDate) {
+      setCurrentMonth(newDate);
+    }
+  };
+
   return (
     <LocalizationProvider
       dateAdapter={AdapterDateFns}
@@ -19,12 +55,18 @@ const MonthlySelector = () => {
         sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
       >
         {/* variant="contained"は塗りつぶし */}
-        <Button color={"error"} variant="contained">
+        <Button
+          onClick={handlePreviousMonth}
+          color={"error"}
+          variant="contained"
+        >
           先月
         </Button>
         {/* viewsはカレンダーに表示させたい情報を選べる */}
         {/* formatは表示の仕方を加工できる */}
         <DatePicker
+          onChange={handleDateChange}
+          value={currentMonth}
           label="年月を選択"
           sx={{ mx: 2, backgroundColor: "white" }}
           views={["year", "month"]}
@@ -39,7 +81,7 @@ const MonthlySelector = () => {
             calendarHeader: { format: "yyyy/MM" },
           }}
         />
-        <Button color={"primary"} variant="contained">
+        <Button onClick={handleNextMonth} color={"primary"} variant="contained">
           次月
         </Button>
       </Box>
