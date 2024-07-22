@@ -20,6 +20,8 @@ import {
 import { db } from "./firebase";
 import { formatMonth } from "./utils/fomatting";
 import { Schema } from "./validations/schema";
+import AuthComponent from "./AuthComponent";
+import ImageStorage from "./pages/ImageStorage";
 
 function App() {
   // firebaseのエラーを判定する関数
@@ -170,6 +172,8 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<AppLyout />}>
+            <Route path="/auth" element={<AuthComponent />} />
+            <Route path="/image" element={<ImageStorage />} />
             <Route
               index
               element={

@@ -14,6 +14,8 @@ import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import HomeIcon from "@mui/icons-material/Home";
 import EqualizerIcon from "@mui/icons-material/Equalizer";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import StorageIcon from "@mui/icons-material/Storage";
 import { NavLink } from "react-router-dom";
 
 interface SidebarProps {
@@ -50,6 +52,8 @@ const SideBar = ({
     // text: メニューの表示名、path: リンク先、icon: アイコン
     { text: "Home", path: "/", icon: HomeIcon },
     { text: "Report", path: "/report", icon: EqualizerIcon },
+    { text: "Auth", path: "/auth", icon: AccountCircleIcon },
+    { text: "ImageStorage", path: "/image", icon: StorageIcon },
   ];
 
   // 基準のリンクのスタイル
