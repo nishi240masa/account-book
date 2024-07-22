@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { ref, uploadBytes } from "firebase/storage";
 import { storage } from "../firebase";
+import Imagepage from "../components/common/Imagepage";
 
 // 画像をアップロードするコンポーネント
 function ImageStorage() {
@@ -35,6 +36,7 @@ function ImageStorage() {
         <input type="file" onChange={handleChange} />
         <button className="button">送信</button>
       </form>
+      <Imagepage />
     </div>
   );
 }
