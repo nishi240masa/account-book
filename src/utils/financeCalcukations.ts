@@ -34,6 +34,7 @@ export function calculateDailyBalances(transactions:Transaction[]):Record<string
 
         // dayがaccに存在しない場合はdayをキーにしてオブジェクトを作成
         if(!acc[day]){
+            // gaga
             acc[day] = {income:0,expense:0,balance:0}
         }
         if(transaction.type === "income"){
